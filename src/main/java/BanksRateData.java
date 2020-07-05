@@ -4,10 +4,12 @@ public class BanksRateData {
 
     private HashSet<BankRateData> rates;
     private int nominal;
+    private String header;
 
-    public BanksRateData(HashSet<BankRateData> rates, int nominal){
+    public BanksRateData(HashSet<BankRateData> rates, int nominal, String header){
         this.rates = rates;
         this.nominal = nominal;
+        this.header = header;
     }
 
     public int getNominal() {
@@ -16,5 +18,9 @@ public class BanksRateData {
 
     public HashSet<BankRateData> getRates() {
         return rates;
+    }
+
+    public String getHeader() {
+        return header;
     }
 }
