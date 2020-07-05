@@ -6,7 +6,6 @@ import sun.plugin2.message.JavaScriptBaseMessage;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class SiteParser {
 
@@ -19,6 +18,7 @@ public class SiteParser {
     private final String bankBuySelector = "td:nth-child(2) > span";
     private final String bankSellSelector = "td:nth-child(3) > span";
     private final String headerSelector = "#converter > div.xxx-df.xxx-df--fxww.xxx-df--jsb.xxx-df-aic.xxx-mb-10 > h1";
+
 
     public HashMap<String, BanksRateData> parseSite(String city) throws IOException {
         HashMap<String, BanksRateData> rates = new HashMap<String, BanksRateData>();

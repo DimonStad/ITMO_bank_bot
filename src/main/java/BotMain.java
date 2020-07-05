@@ -14,9 +14,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class BotMain extends TelegramLongPollingBot {
+
+    private static final Logger logger = Logger.getGlobal();
 
     private boolean expectedDate = false;
     private boolean expectedCity = false;
@@ -29,7 +32,7 @@ public class BotMain extends TelegramLongPollingBot {
         try {
             api.registerBot(new BotMain());
         } catch (TelegramApiRequestException e) {
-            e.printStackTrace();
+            logger.warning("Ошибка регистрации бота");
         }
     }
 
@@ -46,7 +49,7 @@ public class BotMain extends TelegramLongPollingBot {
                         else
                             sendMessage(message, outputFormatter.formatXmlOutput(message.getText()));
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.warning(e.getMessage());
                     }
                 }
                 else {
@@ -85,9 +88,9 @@ public class BotMain extends TelegramLongPollingBot {
                     if(!cityFound) sendMessage(message, "Данный город не доступен для  получения курсов валют");
                     return;
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    logger.warning("Не найден json файл");
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.warning(e.getMessage());
                 }
             }
 
@@ -97,6 +100,7 @@ public class BotMain extends TelegramLongPollingBot {
                 if(!message.getText().contains("город")){
                     sendMessage(message, "Укажите город");
                     expectedCity = true;
+                    return;
                 }
                 else {
                     Gson gson = new Gson();
@@ -127,9 +131,9 @@ public class BotMain extends TelegramLongPollingBot {
                         if(!cityFound) sendMessage(message, "Данный город не доступен для  получения курсов валют");
                         return;
                     } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                        logger.warning("Не найден json файл");
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.warning(e.getMessage());
                     }
                 }
             }
