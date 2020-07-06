@@ -23,6 +23,7 @@ public class BotMain extends TelegramLongPollingBot {
 
     private boolean expectedDate = false;
     private boolean expectedCity = false;
+    private  String charCode = "";
     private static OutputFormatter outputFormatter;
 
     public static void main(String[] args) throws IOException {
@@ -59,18 +60,6 @@ public class BotMain extends TelegramLongPollingBot {
                 return;
             }
 
-            if(message.getText().toLowerCase().contains("цб") ||
-                    (message.getText().toLowerCase().contains("банк") &&
-                            (message.getText().toLowerCase().contains("россии") ||
-                                    message.getText().toLowerCase().contains("центр")
-                            )
-                    )
-            ){
-                sendMessage(message, "Укажите дату в формате dd/mm/yyyy");
-                expectedDate = true;
-                return;
-            }
-
             if(expectedCity){
                 expectedCity = false;
                 try {
@@ -80,6 +69,12 @@ public class BotMain extends TelegramLongPollingBot {
                     boolean cityFound = false;
                     for (Map.Entry<String, String> city: cityCode.entrySet()){
                         if (city.getKey().contains(message.getText().toLowerCase())){
+                            if(!charCode.isEmpty()){
+                                sendMessage(message, outputFormatter.formatSiteCurrencyOutput(city.getValue(), charCode));
+                                charCode = "";
+                                cityFound = true;
+                                break;
+                            }
                             sendMessage(message, outputFormatter.formatSiteOutput(city.getValue()));
                             cityFound = true;
                             break;
@@ -94,9 +89,30 @@ public class BotMain extends TelegramLongPollingBot {
                 }
             }
 
+            expectedCity = false;
+            expectedDate = false;
+
+            if(message.getText().toLowerCase().contains("цб") ||
+                    (message.getText().toLowerCase().contains("банк") &&
+                            (message.getText().toLowerCase().contains("россии") ||
+                                    message.getText().toLowerCase().contains("центр")
+                            )
+                    )
+            ){
+                sendMessage(message, "Укажите дату в формате dd/mm/yyyy");
+                expectedDate = true;
+                return;
+            }
+
             if(message.getText().toLowerCase().contains("курс") ||
                     message.getText().toLowerCase().contains("валют")
             ){
+                if (message.getText().toLowerCase().contains("usd")) charCode = "usd";
+                if (message.getText().toLowerCase().contains("eur")) charCode = "eur";
+                if (message.getText().toLowerCase().contains("gbp")) charCode = "gbp";
+                if (message.getText().toLowerCase().contains("cny")) charCode = "cny";
+                if (message.getText().toLowerCase().contains("jpy")) charCode = "jpy";
+
                 if(!message.getText().contains("город")){
                     sendMessage(message, "Укажите город");
                     expectedCity = true;
@@ -123,6 +139,12 @@ public class BotMain extends TelegramLongPollingBot {
                         boolean cityFound = false;
                         for (Map.Entry<String, String> city: cityCode.entrySet()){
                             if (city.getKey().contains(messageCity.toLowerCase())){
+                                if(!charCode.isEmpty()){
+                                    sendMessage(message, outputFormatter.formatSiteCurrencyOutput(city.getValue(), charCode));
+                                    charCode = "";
+                                    cityFound = true;
+                                    break;
+                                }
                                 sendMessage(message, outputFormatter.formatSiteOutput(city.getValue()));
                                 cityFound = true;
                                 break;
@@ -144,6 +166,7 @@ public class BotMain extends TelegramLongPollingBot {
                         "2) Для получения информации о курсах валют в регионе, упомяните в сообщении одно из" +
                         " следующих слов : курс, валюта. Чтобы сразу указать город упомяните в сообщении слово 'город'" +
                         " и сразу после него укажите название города\n" +
+                        "Чтобы получить курс по определенной валюте упомяните её в сообщении вместе со словами 'курс' или 'валюта'" +
                         "Пример: курс валют в городе Москва\n" +
                         "3) Для получения информации о доступных городах отправьте команду /cities\n" +
                         "4) Для получения информации о доступных валютах отправьте команду /currencies";

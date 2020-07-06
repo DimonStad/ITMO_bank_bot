@@ -28,7 +28,7 @@ public class SiteParser {
         return rates;
     }
 
-    private BanksRateData getRate(String charCode, String city) throws IOException {
+    public BanksRateData getRate(String charCode, String city) throws IOException {
         Document htmlSite = Jsoup.connect("https://" + city + site + charCode).get();
         String header = htmlSite.select(headerSelector).text();
         int nominal = Integer.parseInt(htmlSite.select(nominalSelector).text().split(" ")[0]);

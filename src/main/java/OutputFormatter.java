@@ -54,4 +54,31 @@ public class OutputFormatter {
         }
         return output;
     }
+
+    public String formatSiteCurrencyOutput(String city, String charCode) throws IOException {
+        BanksRateData rates = siteParser.getRate(charCode, city);
+        String output = "";
+
+        String header = rates.getHeader() + "\n";
+        output = output + header.toUpperCase() + "\n";
+
+        Iterator<BankRateData> iterator = rates.getRates().iterator();
+
+        int nominal = rates.getNominal();
+
+        while (iterator.hasNext()){
+            BankRateData rateData = iterator.next();
+
+            String bankName = rateData.getBankName();
+            double buy = rateData.getBuy();
+            double sell = rateData.getSell();
+
+
+            String bankInfo = bankName + "\n";
+            String buyInfo = "Покупка " + nominal + " " + charCode + " : " + buy + "\n";
+            String sellInfo = "Продажа " + nominal + " " + charCode + " : " + sell + "\n";
+            output = output + bankInfo + buyInfo + sellInfo + "\n";
+        }
+        return output;
+    }
 }
